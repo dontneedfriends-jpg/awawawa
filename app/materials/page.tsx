@@ -9,12 +9,14 @@ import { useCurrency } from "@/contexts/currency-context";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Plus, AlertTriangle } from "lucide-react";
+import { MaterialFormDialog } from "@/components/materials/material-form-dialog";
 
 export default function MaterialsPage() {
   const { t } = useI18n();
   const { formatCurrency } = useCurrency();
   const materials = useQuery(api.materials.list);
   const lowStock = useQuery(api.materials.getLowStock);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-[var(--bg-primary)]">
@@ -26,7 +28,10 @@ export default function MaterialsPage() {
             <h1 className="text-3xl font-bold text-white">
               {t("materials.title")}
             </h1>
-            <Button className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]">
+            <Button 
+              className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]"
+              onClick={() => setIsDialogOpen(true)}
+            >
               <Plus className="mr-2 h-4 w-4" />
               {t("materials.newMaterial")}
             </Button>
@@ -103,7 +108,10 @@ export default function MaterialsPage() {
           {materials && materials.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-400 mb-4">{t("common.noData")}</p>
-              <Button className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]">
+              <Button 
+                className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]"
+                onClick={() => setIsDialogOpen(true)}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 {t("materials.newMaterial")}
               </Button>
@@ -111,6 +119,8 @@ export default function MaterialsPage() {
           )}
         </div>
       </main>
+
+      <MaterialFormDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,11 +10,13 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Plus, Package } from "lucide-react";
 import { formatDuration } from "@/lib/date";
+import { PartFormDialog } from "@/components/parts/part-form-dialog";
 
 export default function PartsPage() {
   const { t, locale } = useI18n();
   const { formatCurrency } = useCurrency();
   const parts = useQuery(api.parts.list, {});
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-[var(--bg-primary)]">
@@ -25,7 +28,10 @@ export default function PartsPage() {
             <h1 className="text-3xl font-bold text-white">
               {t("parts.title")}
             </h1>
-            <Button className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]">
+            <Button 
+              className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]"
+              onClick={() => setIsDialogOpen(true)}
+            >
               <Plus className="mr-2 h-4 w-4" />
               {t("parts.newPart")}
             </Button>
@@ -93,7 +99,10 @@ export default function PartsPage() {
           {parts && parts.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-400 mb-4">{t("common.noData")}</p>
-              <Button className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]">
+              <Button 
+                className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]"
+                onClick={() => setIsDialogOpen(true)}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 {t("parts.newPart")}
               </Button>
@@ -101,6 +110,8 @@ export default function PartsPage() {
           )}
         </div>
       </main>
+
+      <PartFormDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,11 +10,13 @@ import { useCurrency } from "@/contexts/currency-context";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Plus, Printer, Activity } from "lucide-react";
+import { PrinterFormDialog } from "@/components/printers/printer-form-dialog";
 
 export default function PrintersPage() {
   const { t } = useI18n();
   const { formatCurrency } = useCurrency();
   const printers = useQuery(api.printers.list);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-[var(--bg-primary)]">
@@ -25,7 +28,10 @@ export default function PrintersPage() {
             <h1 className="text-3xl font-bold text-white">
               {t("printers.title")}
             </h1>
-            <Button className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]">
+            <Button 
+              className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]"
+              onClick={() => setIsDialogOpen(true)}
+            >
               <Plus className="mr-2 h-4 w-4" />
               {t("printers.newPrinter")}
             </Button>
@@ -97,7 +103,10 @@ export default function PrintersPage() {
           {printers && printers.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-400 mb-4">{t("common.noData")}</p>
-              <Button className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]">
+              <Button 
+                className="bg-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)]"
+                onClick={() => setIsDialogOpen(true)}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 {t("printers.newPrinter")}
               </Button>
@@ -105,6 +114,8 @@ export default function PrintersPage() {
           )}
         </div>
       </main>
+
+      <PrinterFormDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </div>
   );
 }
